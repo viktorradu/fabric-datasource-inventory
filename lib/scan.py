@@ -29,7 +29,7 @@ class Scan:
                 ws['name'] = workspace.get('name')
                 ws['state'] = workspace.get('state')
                 ws['capacityId'] = workspace.get('capacityId')
-                for model in workspace.get('datasets'):
+                for model in workspace.get('datasets', []):
                     ds = {}
                     result['models'].append(ds)
                     ds['workspaceId'] = workspace.get('id')
@@ -37,7 +37,7 @@ class Scan:
                     ds['name'] = model.get('name')
                     ds['datasources'] = [usage.get('datasourceInstanceId') for usage in model.get('datasourceUsages', [])]
 
-                for user in workspace.get('users'):
+                for user in workspace.get('users', []):
                     u = {}
                     result['users'].append(u)
                     u['workspaceId'] = workspace.get('id')
@@ -46,7 +46,7 @@ class Scan:
                     u['principalType'] = user.get('principalType')
                     u['displayName'] = user.get('displayName')
                 
-                for datasource in scanResult.get('datasourceInstances'):
+                for datasource in scanResult.get('datasourceInstances', []):
                     dsi = {}
                     result['datasources'].append(dsi)
                     dsi['datasourceType'] = datasource.get('datasourceType')
