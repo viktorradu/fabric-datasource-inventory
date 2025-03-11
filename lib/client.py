@@ -41,7 +41,7 @@ class Client:
                 return result
         
         if 'error' in result:
-            print(result.error)
+            print(result.get('error'))
 
         return result
     
