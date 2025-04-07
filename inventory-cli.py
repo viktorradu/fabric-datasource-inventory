@@ -1,12 +1,25 @@
 from lib import *
-import os, csv
+import os, csv, argparse
 from math import ceil
 from pathlib import Path
 
-path = './output'
-Path(path).mkdir(parents=True, exist_ok=True)
+
+parser = argparse.ArgumentParser(description='--output parameter parser')
+parser.add_argument('--output', type=str, help='Output directory for the scan results')
+parser.add_argument('--tenant', type=str, help='Tenant ID for the Service Principal')
+parser.add_argument('--client', type=str, help='Client ID for the Service Principal')
+parser.add_argument('--secret', type=str, help='Client secret for the Service Principal')
+args = parser.parse_args()  
+if args.output:
+    output = args.output
+else:
+    output = 'output'
+
+Path(output).mkdir(parents=True, exist_ok=True)
 
 client = Client()
+if args.tenant and args.client and args.secret:
+    client.set_sp_credentials(tenant_id=args.tenant, client_id=args.client, client_secret=args.secret)
 scan = Scan(client)
 
 workspaces = scan.list_workspaces()
@@ -22,7 +35,7 @@ if 'error' not in workspaces:
         
         for collection in scan_result.keys():      
             if len(scan_result[collection]) > 0:
-                file_path = f'{path}/{collection}.csv'
+                file_path = f'{output}/{collection}.csv'
                 is_new = not os.path.exists(file_path)
                 with open(file_path, 'a', newline='', encoding="utf-8") as file:
                     writer = csv.DictWriter(file,fieldnames=scan_result[collection][0].keys(),extrasaction='ignore', quoting=csv.QUOTE_ALL, lineterminator='\n')

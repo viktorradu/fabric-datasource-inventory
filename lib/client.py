@@ -11,6 +11,8 @@ class Client:
         self.success_list = [200, 202]
         self.scope = 'https://analysis.windows.net/powerbi/api/.default'
             
+    def set_sp_credentials(self, tenant_id: str, client_id: str, client_secret: str):
+        self.auth.set_sp_credentials(tenant_id, client_id, client_secret)
 
     def __get_token(self):
         return self.auth.get_token(self.scope)

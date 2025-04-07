@@ -37,7 +37,8 @@ class Scan:
                     ds['name'] = model.get('name')
                     ds['datasources'] = [usage.get('datasourceInstanceId') for usage in model.get('datasourceUsages', [])]
 
-                for user in workspace.get('users', []):
+                users = workspace.get('users', [])
+                for user in users if users is not None else []:
                     u = {}
                     result['users'].append(u)
                     u['workspaceId'] = workspace.get('id')
