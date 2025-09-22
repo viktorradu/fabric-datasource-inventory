@@ -57,14 +57,14 @@ class Client:
             try:
                 response = requests.post(uri, headers=self.__get_headers(additional_headers), data=data)
                 result = self.__process_response(response, uri, attempt)
-            except:
-                result = {"error": f'Error connecting to {uri}.'}
+            except Exception as e:
+                result = {"error": f'Error connecting to {uri}. {str(e)}'}
 
             if 'error' not in result:
                 return result
         
         if 'error' in result:
-            print(result.error)
+            print(result.error) 
 
         return result
 
