@@ -27,7 +27,7 @@ if 'error' not in workspaces:
     batch_size = 100
     batch_count = ceil(len(workspaces) / batch_size)
     for batch in range(0, batch_count):
-        batch_workspaces = workspaces[batch:batch + batch_size]
+        batch_workspaces = workspaces[batch * batch_size:(batch + 1) * batch_size]
         workspace_ids = [workspace['id'] for workspace in batch_workspaces]
         print(f"Scaning workspace batch {batch + 1} out of {batch_count}")
         scan_result = scan.scan_workspaces(workspace_ids)
@@ -36,10 +36,11 @@ if 'error' not in workspaces:
         for collection in scan_result.keys():      
             if len(scan_result[collection]) > 0:
                 file_path = f'{output}/{collection}.csv'
-                is_new = not os.path.exists(file_path)
+                if batch == 0 and os.path.exists(file_path):
+                    os.remove(file_path)
                 with open(file_path, 'a', newline='', encoding="utf-8") as file:
                     writer = csv.DictWriter(file,fieldnames=scan_result[collection][0].keys(),extrasaction='ignore', quoting=csv.QUOTE_ALL, lineterminator='\n')
-                    if is_new:
+                    if batch == 0:
                         writer.writeheader()
                     writer.writerows(scan_result[collection])
 else:
